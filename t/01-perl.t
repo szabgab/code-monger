@@ -9,11 +9,14 @@ my $cm = Code::Monger->new;
 $cm->process('t/corpus/eg/Abc.pm');
 #diag explain $cm->data;
 is_deeply $cm->data, {
-   'subs' => [
-     'foo',
-     'bar',
-     '_quix'
-   ]
+	'pragmatas' => [
+		'strict',
+		'warnings',
+	],
+	'subs' => [
+		'foo',
+		'bar',
+		'_quix',
+	]
 };
-
 
