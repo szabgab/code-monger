@@ -7,6 +7,8 @@ my %conf = (
 	VERSION_FROM  => 'lib/Code/Monger.pm',
 	ABSTRACT_FROM => 'lib/Code/Monger.pm',
 	PREREQ_PM     => {
+		'Moose'      => 0,
+		'Path::Tiny' => 0,
 	},
 );
 
