@@ -1,0 +1,28 @@
+<% UNLESS title; title = 'MetaCPAN About'; END %>
+<div class="list-group tabbable tabs-left about-bar slidepanel">
+    <div class="visible-xs">
+        <% INCLUDE mobile/toolbar-search-form.html %>
+    </div>
+    <ul class="nav nav-pills nav-stacked" data-spy="affix" data-offset-top="125" id="left-nav">
+    <li<% IF req.action == 'about' %> class="active"<% END %>>
+        <a href="/about">About MetaCPAN</a>
+    </li>
+    <li<% IF req.action == 'about/resources' %> class="active"<% END %>>
+        <a href="/about/resources">Contact</a>
+    </li>
+    <li<% IF req.action == 'about/development' %> class="active"<% END %>>
+        <a href="/about/development">Development</a>
+    </li>
+    <li<% IF req.action == 'about/faq' %> class="active"<% END %>>
+        <a href="/about/faq">FAQ</a>
+    </li>
+    <li<% IF req.action == 'about/sponsors' %> class="active"<% END %>>
+        <a href="/about/sponsors">Sponsors</a>
+    </li>
+    <li<% IF req.action == 'about/contributors' %> class="active"<% END %>>
+        <a href="/about/contributors">Contributors</a>
+    </li>
+    <li<% IF req.action == 'about/missing_modules' %> class="active"<% END %>>
+        <a href="/about/missing_modules">Missing Modules</a>
+    </li>
+</div>

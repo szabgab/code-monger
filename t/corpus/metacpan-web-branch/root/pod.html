@@ -1,0 +1,64 @@
+<% twitter_card_inc = 'inc/twitter/module.html' %>
+<%# NOTE: canonical set in controller %>
+<% meta_description = module.abstract %>
+<%
+  title =
+    (module.documentation or module.module.0.name ) _
+    (module.abstract ? ' - ' _ module.abstract : '');
+  rss = 'distribution/' _ module.distribution
+%>
+
+<% INCLUDE inc/breadcrumbs.html plussers_div = plusser_authors%>
+<div id="show-right-panel">[<button class="btn-link" onclick="togglePanel('right'); return false;">show</button>] right panel</div>
+
+<ul class="nav nav-list slidepanel" itemscope itemtype="http://schema.org/SoftwareApplication">
+  <li class="visible-xs">
+    <% INCLUDE mobile/toolbar-search-form.html %>
+  </li>
+  <li class="nav-header"><span class="relatize"><% module.date.dt_http %></span></li>
+  <% IF documented_module.version %>
+  <li>
+    <div>
+      Module version: <% documented_module.version | html %>
+    </div>
+  </li>
+  <% END %>
+  <li>
+    <div>
+      <a href="/source/<% module.author %>/<% module.release %>/<% module.path %>">Source</a>
+      (<a href="<% api_external %>/source/<% module.author %>/<% module.release %>/<% module.path %>">raw</a>)
+    </div>
+  </li>
+  <li>
+    <div>
+      <a href="/source/<% module.author %>/<% module.release %>/<% module.path.split("/").splice(0,-1).join("/") %>">Browse</a>
+      (<a href="<% api_external %>/source/<% module.author %>/<% module.release %>/">raw</a>)
+    </div>
+  </li>
+  <% PROCESS inc/release-info.html %>
+  <li class="nav-header">Activity</li>
+  <% INCLUDE inc/activity.html query = 'distribution=' _ release.distribution %>
+  <% INCLUDE inc/release-tools.html %>
+</ul>
+
+<div id="right-panel" class="pull-right">
+<div>[<button class="btn-link" onclick="togglePanel('right'); return false;">hide</button>]</div>
+<div class="pull-right">
+<% INCLUDE inc/author-pic.html author = author %>
+<% INCLUDE inc/contributors.html contributors = contributors %>
+</div>
+<% INCLUDE inc/dependencies.html dependencies = release.dependency %>
+</div>
+<a name="___pod"></a>
+<div class="pod content anchors">
+<% IF pod %>
+<% pod.replace(/<pre><code>/, '<pre class="brush: pl; class-name: \'highlight\'; toolbar: false; gutter: false; metacpan-verbatim">').replace(/<\/code><\/pre>/, '</pre>') | none %>
+<% ELSIF pod_error %>
+<p class="pod-error">Error rendering POD for <code><% module.name %></code> - <% pod_error %></p>
+<% ELSE %>
+<p class="pod-error">
+    No POD found for <code><% module.name %></code>.
+    Time to <a href="/source/<% module.author %>/<% module.release %>/<% module.path %>">read the source</a>?
+</p>
+<% END %>
+</div>

@@ -1,0 +1,104 @@
+
+<%- query = req.parameters.q %>
+<% title = 'CPAN Mirrors' %>
+<script src="/static/openlayers/OpenLayers.js"></script>
+<ul class="nav nav-list slidepanel">
+    <li class="visible-xs">
+      <% INCLUDE mobile/toolbar-search-form.html %>
+    </li>
+    <li class="nav-header">Sorting</li>
+    <img src="/static/icons/busy.gif" style="float: right; visibility: hidden" id="busy">
+    <li><a href="javascript:searchForNearest()">Nearest</a></li>
+    <li class="nav-header">Protocols</li>
+    <li><a href="javascript:toggleProtocol('http')">http</a></li>
+    <li><a href="javascript:toggleProtocol('ftp')">ftp</a></li>
+    <li><a href="javascript:toggleProtocol('rsync')">rsync</a></li>
+    <li class="nav-header">Continents</li>
+    <%- continents = []; FOREACH mirror IN mirrors; continents.push(mirror.continent); END %>
+    <% FOREACH continent IN continents.unique.sort %>
+    <li><a href="#<% continent %>"><% continent %></a></li>
+    <% END %>
+</ul>
+
+<ul class="nav nav-list box-right hidden-phone">
+  <li class="nav-header">Countries</li>
+    <%- countries = []; FOREACH mirror IN mirrors; countries.push(mirror.country); END %>
+    <%- FOREACH country IN countries.unique.sort %>
+    <li><a href="#<% country %>"><% country %></a></li>
+    <% END %>
+</ul>
+
+<div class="content">
+<div id="map" style="width: 600px; height: 200px"></div>
+<br>
+<ul>
+<%-
+dots = [];
+continents = [];
+FOREACH mirror IN mirrors;
+  dots.push(mirror.location);
+  UNLESS continents.last().name == mirror.continent;
+    continents.push({ name = mirror.continent, countries = [] });
+  END;
+  continent = continents.last();
+  UNLESS continent.countries.last().name == mirror.country;
+    continent.countries.push({ name = mirror.country, mirrors = [] });
+  END;
+  continent.countries.last().mirrors.push(mirror);
+END;
+FOREACH continent IN continents;
+%>
+  <li id="<% continent.name %>"><big><strong><% continent.name %></strong></big>
+    <ul>
+<%-
+  FOREACH country IN continent.countries %>
+      <li id="<% country.name %>"><strong><% country.name %></strong>
+        <ul>
+  <%-
+    FOREACH mirror IN country.mirrors;
+      date = mirror.inceptdate.dt;
+      day = date.day _ '/' _ date.month _ '/' _ date.year;
+    %>
+          <li>
+            <a class="label<% mirror.ftp ? "" : " invisible" %>" href="<% mirror.ftp %>">ftp</a>
+            <a class="label label-warning<% mirror.http ? "" : " invisible" %>" href="<% mirror.http %>">http</a>
+            <a class="label label-success<% mirror.rsync ? "" : " invisible" %>" href="<% mirror.rsync %>">rsync</a>
+            <span title="active since <% day %>"><% mirror.org %>, <% mirror.city %><span>
+            <%- IF mirror.distance %> (<% mirror.distance | format_number %> km)<% END %>
+          </li>
+    <%- END %>
+    </ul></li>
+  <%- END %>
+  </ul></li>
+<%- END %>
+</ul>
+<script type="text/javascript">
+$(function(){
+  $('#map').width("auto");
+  map = new OpenLayers.Map( 'map' );
+  map.addLayer(new OpenLayers.Layer.OSM());
+  var dots = <% dots.json %>;
+  var styleMap = new OpenLayers.StyleMap(OpenLayers.Util.applyDefaults(
+          {fillColor: "#BAD3EA", fillOpacity: 1, strokeColor: "#36C", pointRadius: 4},
+          OpenLayers.Feature.Vector.style["default"]));
+  var markers = new OpenLayers.Layer.Vector("name", {styleMap: styleMap});
+  map.addLayer(markers);
+
+  for(var i = 0; i < dots.length; i++) {
+    var lonLat = new OpenLayers.LonLat( dots[i][0], dots[i][1] )
+          .transform(
+            new OpenLayers.Projection("EPSG:4326"), // transform from WGS 1984
+            map.getProjectionObject() // to Spherical Mercator Projection
+          );
+
+    markers.addFeatures([
+      new OpenLayers.Feature.Vector(new OpenLayers.Geometry.Point(lonLat.lon, lonLat.lat))]);
+  }
+  map.setCenter (new OpenLayers.LonLat( 14,35 ).transform(
+    new OpenLayers.Projection("EPSG:4326"), // transform from WGS 1984
+    map.getProjectionObject() // to Spherical Mercator Projection
+  ), 2);
+
+});
+</script>
+

@@ -1,0 +1,3 @@
+#!/bin/sh
+
+`dirname "$0"`/carton exec prove -lrv "$@"

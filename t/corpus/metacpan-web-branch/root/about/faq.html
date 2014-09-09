@@ -1,0 +1,141 @@
+<% PROCESS inc/about-bar.html %>
+<div class="content about-resources anchors">
+<% USE MultiMarkdown(heading_ids => 1) -%>
+<% FILTER multimarkdown %>
+# FAQ's answered
+
+## What third-party sites does MetaCPAN use?
+
+* [CPAN](http://www.cpan.org/) is where all the Perl modules live.
+MetaCPAN 'just' indexes those files.
+* [Perlybook](http://perlybook.org/) provides the MOBI and EPUB download capabilities.
+MetaCPAN provides direct links to download the POD in the respective formats.
+* [CPAN Testers](http://www.cpantesters.org/) collect test reports of the CPAN modules.
+MetaCPAN show the number of test reports and links to the tests.
+* [CPANTS](http://cpants.cpanauthors.org/) provide Kwalitee metrics for CPAN modules.
+MetaCPAN links to the respective pages on the CPANTS site.
+* [CPAN Ratings](http://cpanratings.perl.org/) allows users to give stars and review CPAN distributions.
+MetaCPAN show the average rating using stars and links to the reviews.
+* [search.cpan.org](http://search.cpan.org/) is another search engine for the same data.
+It is older, but the source code has not been published.
+MetaCPAN links to the respective page of each module/distribution.
+* [RT](https://rt.cpan.org/) is an installation of [Request Tracker](https://www.bestpractical.com/rt/)
+that provides a default bug~ and issue-tracking system for every CPAN distribution.
+Unless the author of the module configured it otherwise MetaCPAN will link the respective RT Queue
+of every distribution.
+* [GitHub](https://github.com/) is the most popular public version control system among Perl module developers.
+Many distributions indicate it as their public VCS. Some of them even mark GitHub as their preferred
+issue tracking system. MetaCPAN links to the GitHub repository and bug tracking system of each distributions
+if the author has included the information in the META files.
+
+## How to list all the Plack Middleware?
+
+Search for <a href="/search?q=module:Plack::Middleware">module:Plack::Middleware</a>
+
+## In general, how to list all the modules in a name-space?
+
+Type in <em>module:</em> and the namespace such as <a href="/search?q=module:Catalyst::Plugin">Catalyst::Plugin</a>,
+<a href="/search?q=module:Dancer::Plugin">Dancer::Plugin</a>,
+<a href="/search?q=module:Mojolicious::Plugin">Mojolicious::Plugin</a>,
+or <a href="/search?q=module:Perl::Critic::Policy">Perl::Critic::Policy</a>.
+
+## A non-comprehensive list of special search expressions:
+
+These search-terms can be combined with each other and regular search term.
+
+* <em>module:</em>  filter by part of a  module name ( e.g. [module:Plugin](/search?q=module:Plugin) )
+* <em>distribution:</em> search in the files of the specific distribution ( e.g. [distribution:Dancer auth](/search?q=distribution%3ADancer+auth) )
+* <em>author:</em> search in the modules releases by the given author ( e.g. [author:SONGMU Redis](/search?q=author%3ASONGMU+Redis) )
+* <em>version:</em> limit the search to modules with the given version number ( e.g. [version:1.00](/search?q=version%3A1.00) )
+
+Wildcards: ? matches a single character, * matches any number of characters
+( e.g. [version:1.*](/search?q=version%3A1.*) and [version:1.?](/search?q=version%3A1.?) ) 
+
+## Why can't I find a specific module?
+
+See our [missing module](/about/missing_modules) page.
+
+## How can I get involved / who is involved?
+
+* [Contact us](/about/contact)
+* [Development information](/about/development)
+* [Who else has contributed?](/about/contributors)
+
+## Where can I find the API docs?
+
+The API docs can be found [on the wiki](https://github.com/CPAN-API/cpan-api/wiki/API-docs).
+API requests need to be sent to api.metacpan.org.
+
+## How can I try the API?
+
+[http://explorer.metacpan.org/](http://explorer.metacpan.org/) is an easy way
+to try sending queries to the back-end.
+
+## Why can't I link my PAUSE account?
+
+### Is your PAUSE email set up?
+
+If you are a module author you can link your [PAUSE](http://pause.perl.org/)
+account to your MetaCPAN account. But you must configure the email address
+forwarding in your PAUSE account for this to work.
+
+### Do you have multiple accounts?
+
+If you can only connect your account to github <em>or</em> PAUSE
+(e.g. connecting to one disconnects the other), it is usually because
+you have 2 accounts.
+
+To fix this
+
+ * log in with one of them
+ * go to identities and disconnect that account
+ * log in with the other and connect to the first
+
+### Still have problems? Favorites not displaying on author page?
+
+Please see [this discussion](https://github.com/CPAN-API/metacpan-web/issues/852).
+
+## Oops! I made a mistake.  Can you delete my module?
+
+Requests to have modules removed from the CPAN should be directed at the PAUSE
+admins.  Keep in mind that, if a module contains sensitive information, just
+deleting it from your CPAN directory is not enough, as it will still reside in
+the BackPAN.
+
+If the PAUSE admins approve your request, have them CC noc@metacpan.org so that
+we can push the right buttons to have your work removed from MetaCPAN as well.
+
+## Can I _automatically_ redirect links pointing at search.cpan.org to metacpan.org?
+
+For Chrome users, the [MetaCPAN
+Helper](https://chrome.google.com/webstore/detail/metacpan-helper/aoioenbjpmccpkincghhjfmeceknpcnb)
+extension will automatically rewrite search.cpan.org links to MetaCPAN.
+
+You can accomplish the same thing by modifying your <code>hosts</code> file.
+Add the following lines and all links to search.cpan.org (and links to source
+code) will be redirected to MetaCPAN:
+
+    46.43.35.68 search.cpan.org
+    46.43.35.68 cpansearch.perl.org
+
+If you do this, be sure to point cpanm to another mirror, as it defaults to
+search.cpan.org. Here's how:
+
+    export PERL_CPANM_OPT="--mirror http://www.cpan.no/" # Insert your closest mirror here.
+
+## Can I _manually_ redirect links pointing at search.cpan.org to metacpan.org?
+
+If you find yourself to be on search.cpan.org and you want to get redirected to
+corresponding metacpan page, just change the domain name with
+search.**m**cpan.org. For example:
+
+    http://search.cpan.org/~xsawyerx/MetaCPAN-API-0.43/lib/MetaCPAN/API.pm
+
+has to be changed to:
+
+    http://search.mcpan.org/~xsawyerx/MetaCPAN-API-0.43/lib/MetaCPAN/API.pm
+                  ^
+
+<% END %>
+
+</div>

@@ -1,0 +1,41 @@
+language: perl
+perl:
+  - "5.20"
+  - "5.18"
+  - "5.16"
+  - "5.14"
+  - "5.12"
+  - "5.10"
+
+matrix:
+  allow_failures:
+    - perl: "5.20"
+
+before_install:
+  - npm install -g less
+  # Pre-install from backpan to avoid upgrade breakage.
+  - cpanm -n http://cpan.metacpan.org/authors/id/M/ML/MLEHMANN/common-sense-3.6.tar.gz
+  - cpanm -n Devel::Cover::Report::Coveralls
+  - cpanm -n Carton
+
+install:
+  # Carton::Builder (carton install) passes --notest to cpanm.
+  - carton install
+
+
+script:
+  # Devel::Cover isn't in the cpanfile
+  # but if it's installed into the global dirs this should work.
+  - HARNESS_PERL_SWITCHES=-MDevel::Cover=+ignore,local carton exec prove -lrv t
+
+after_success:
+  - cover -report coveralls
+
+
+notifications:
+  email:
+    recipients:
+      - olaf@wundersolutions.com
+    on_success: change
+    on_failure: always
+  irc: "irc.perl.org#metacpan-travis"

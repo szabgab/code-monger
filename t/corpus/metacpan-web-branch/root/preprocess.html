@@ -1,0 +1,110 @@
+<%
+
+USE Number.Format;
+USE JSON;
+page = req.page;
+
+user = c.user;
+user_exists = c.user_exists
+
+profiles = {
+  bitbucket = { name = 'Bitbucket', url = 'http://bitbucket.org/%s'},
+  coderwall = { name = 'Coderwall', url = 'http://www.coderwall.com/%s'},
+  couchsurfing = { name = 'Couch Surfing', url = 'http://www.couchsurfing.org/people/%s/'},
+  delicious = { name = 'Delicious', url = 'http://www.delicious.com/%s' },
+  digg = { name = 'Digg', url = 'http://digg.com/%s' },
+  dotshare = { name = 'Dotshare', url = 'http://dotshare.it/~%s' },
+  facebook = { name = 'Facebook', url = 'https://facebook.com/%s' },
+  flickr = { name = 'Flickr', url = 'http://www.flickr.com/people/%s/' },
+  friendfeed = { name = 'FriendFeed', url = 'http://friendfeed.com/%s' },
+  geeklist = { name = 'geekli.st', url = 'http://geekli.st/%s' },
+  github = { name = 'GitHub', url = 'https://github.com/%s' },
+  'github-meets-cpan' = { name = 'Github Meets CPAN', url = 'http://github-meets-cpan.com/user/%s' },
+  gitorious = { name = 'Gitorious', url = 'https://gitorious.org/~%s' },
+  gittip = { name = 'Gratipay', url = 'https://gratipay.com/%s' },
+  googleplus = { name = 'Google+', url = 'http://plus.google.com/%s' },
+  hackernews = { name = 'Hacker News', url = 'http://news.ycombinator.com/user?id=%s' },
+  identica = { name = 'Identi.ca', url = 'http://identi.ca/%s' },
+  klout = { name = 'Klout', url = 'http://klout.com/#/%s' },
+  lanyrd = { name = 'Lanyrd', url = 'http://lanyrd.com/profile/%s' },
+  lastfm = { name = 'LastFM', url = 'http://www.last.fm/user/%s' },
+  linkedin = { name = 'LinkedIn', url = 'http://www.linkedin.com/in/%s' },
+  meetup = { name = 'Meetup', url = 'http://www.meetup.com/members/%s' },
+  myspace = { name = 'MySpace', url = 'http://www.myspace.com/%s' },
+  nerdability = { name = 'NerdAbility', url = 'https://nerdability.com/user/%s' },
+  newsblur  = { name = 'Newsblur', url = 'http://%s.newsblur.com' },
+  ohloh = { name = 'Ohloh', url = 'https://www.ohloh.net/accounts/%s' },
+  perlmonks = { name = 'PerlMonks', url = 'http://www.perlmonks.org/?node=%s' },
+  pinboard = { name = 'Pinboard', url = 'http://pinboard.in/u:%s' },
+  playperl = { name = 'Questhub', url = 'http://questhub.io/player/%s' },
+  posterous = { name = 'Posterous', url = 'http://%s.posterous.com/' },
+  prepan = { name = 'PrePAN', url = 'http://prepan.org/user/%s' },
+  reddit = { name = 'Reddit', url = 'http://www.reddit.com/user/%s' },
+  slideshare = { name = 'SlideShare', url = 'http://www.slideshare.net/%s' },
+  sourceforge = { name = 'SourceForge', url = 'http://sourceforge.net/users/%s' },
+  speakerdeck = { name = 'SpeakerDeck', url = 'https://speakerdeck.com/u/%s' },
+  stackexchange = { name = 'StackExchange', url = 'http://stackexchange.com/users/%s?tab=accounts' },
+  stackoverflow = { name = 'StackOverflow', url = 'http://stackoverflow.com/users/%s/' },
+  stackoverflowcareers = { name = 'Stack Overflow Careers', url = 'http://careers.stackoverflow.com/%s' },
+  steam = { name = 'Steam', url = 'http://steamcommunity.com/id/%s' },
+  stumbleupon = { name = 'StumbleUpon', url = 'http://www.stumbleupon.com/stumbler/%s/' },
+  tumblr = { name = 'Tumblr', url = 'http://%s.tumblr.com/' },
+  twitter = { name = 'Twitter', url = 'http://twitter.com/%s' },
+  vimeo = { name = 'Vimeo', url = 'http://vimeo.com/%s' },
+  youtube = { name = 'Youtube', url = 'http://www.youtube.com/user/%s' },
+  };
+-%>
+<%-
+
+  MACRO link_to_file(file, linktext) BLOCK;
+    title = file.documentation || file.path;
+    # If there is pod for this file...
+    IF file.documentation || file.pod_lines.size || file.module.grep(->(module){ module.associated_pod }).size;
+      IF file.status == "latest";
+        # If it's a PAUSE-indexed module (02packages)...
+        IF file.documentation
+        && file.authorized
+        && file.indexed
+        && file.module.grep(->(module){ module.authorized && module.indexed });
+          # Use /pod/$name.
+          path = file.documentation;
+        ELSE;
+          # Use distribution (version-independent) url.
+            path = ['distribution', file.distribution, file.path].join('/');
+        END;
+      # Else use versioned url.
+      ELSE;
+        path = ['release', file.author, file.release, file.path].join("/");
+      END;
+      %><a href="/pod/<% path %>"><%- linktext || title %></a><%
+    # Else show source.
+    ELSE;
+      link_to_source(file, linktext) | none;
+    END;
+  END;
+
+  MACRO link_to_source(file, linktext) BLOCK;
+    # NOTE: The 'package' attribute is fabricated in the release template.
+    path = ['source', file.author, file.release, file.path].join('/');
+    # Append "#P${package}" if we have a package name.
+    IF file.package;
+      path = path _  '#P' _ file.package;
+    END
+    %><a href="/<% path %>"><% linktext || file.package || file.path %></a><%
+  END;
+
+  # protocols = {
+  #   "bzr" = 10,
+  #   "https" = 11742,
+  #   "http" = 30367,
+  #   "git+ssh:":1,
+  #   "svn:":16,
+  #   "git:":14934,
+  #   "cvs:":4,
+  #   "svn+ssh:":1,
+  #   "ssh:":12
+  # };
+  MACRO is_url(url) BLOCK;
+    url && url.match("^(bzr|https?|git+ssh|svn|ssh|svn+ssh|mailto|git|irc):") ? 1 : 0;
+  END;
+ -%>
