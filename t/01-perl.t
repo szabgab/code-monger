@@ -13,6 +13,9 @@ is_deeply $cm->data, {
 		'strict',
 		'warnings',
 	],
+	'modules' => [
+		'Bob',
+	],
 	'subs' => [
 		'foo',
 		'bar',

@@ -10,7 +10,7 @@ sub process {
 	my @pragmatas = grep { $_ eq lc $_ } @loaded;
 	my %data = (
 		subs => \@subs,
-		#modules => \@modules,
+		modules => \@modules,
 		pragmatas => \@pragmatas,
 	);
 
