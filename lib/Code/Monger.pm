@@ -5,6 +5,8 @@ our $VERSION = '0.01';
 
 use Path::Tiny qw(path);
 
+has data => (is => 'rw');
+
 =head1 NAME
 
 Code::Monger - Doing something
@@ -17,11 +19,12 @@ sub process {
 	my $code = path($filename)->slurp_utf8;
 
 	my $type = $self->get_type($filename, $code);
-	my $module = 'Code::Monger::' + ucfirst $type;
+	my $module = 'Code::Monger::' . ucfirst $type;
 	eval "use $module";
 	die $@ if $@;
 
-	$module->new->process($code);
+	my $data = $module->new->process($code);
+	$self->data($data);
 
 	return;
 }
