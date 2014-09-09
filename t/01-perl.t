@@ -20,6 +20,10 @@ is_deeply $cm->data, {
 		'foo',
 		'bar',
 		'_quix',
-	]
+	],
+	calls => [
+		# TODO: 'foo'
+		'_quix',
+	],
 };
 
