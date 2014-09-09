@@ -36,9 +36,12 @@ my %build_requires = ();
 my %test_requires = (
 		'Test::More'      => '1.00',
 		#'Test::Exception' => '0.32',
+		'Perl::Tidy'             => '20140711',  # Apparently Test::Code::TidyAll does not explicitly depend on it
+		'Test::Code::TidyAll'    => 0.20,
+		'Test::Perl::Critic'     => 0,
 
 		# standard modules:
-		'File::Temp' => 0,
+		#'File::Temp' => 0,
 );
 
 ###   merging data "standard code"
