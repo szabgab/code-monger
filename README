@@ -1,0 +1,26 @@
+
+
+* Recognize the file-type by extension and/or by content. (See Padre for file-type guessing code)
+
+* Process a Perl file using Regex  (Later see Padre for this)
+* Processs a JavaScript file using Regex.
+* Process a Python file using Regex.
+* Process a Ruby file using Regex.
+
+
+* The sha1 of the file can be the key in the database.
+* Store the
+   language
+   filename
+   project name
+
+
+
+
+
+
+* Allow the mapping of specific files to file-types by an external configuration file or maybe even wildcards to file-types mapping.
+
+
+
+
