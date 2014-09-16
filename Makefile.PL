@@ -7,8 +7,10 @@ my %conf = (
 	VERSION_FROM  => 'lib/Code/Monger.pm',
 	ABSTRACT_FROM => 'lib/Code/Monger.pm',
 	PREREQ_PM     => {
-		'Moose'      => 0,
-		'Path::Tiny' => 0,
+		'Parse::Functions' => '0.01',
+		'PPIx::EditorTools::Outline' => '0.18',
+		'Moose'      => '2.1211',
+		'Path::Tiny' => '0.056',
 	},
 );
 
